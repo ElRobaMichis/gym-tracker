@@ -1,6 +1,9 @@
 name: PR Preview
 
 on:
+  push:
+    branches:
+      - '*'
   pull_request:
     types: [opened, synchronize]
 
