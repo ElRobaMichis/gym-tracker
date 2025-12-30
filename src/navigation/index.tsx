@@ -10,6 +10,7 @@ import {
   Library,
   TrendingUp,
   Settings,
+  FolderOpen,
   LucideIcon,
 } from 'lucide-react-native';
 
@@ -20,6 +21,8 @@ import { ExerciseSelectScreen } from '../screens/exercises/ExerciseSelectScreen'
 import { ExerciseLibraryScreen } from '../screens/exercises/ExerciseLibraryScreen';
 import { ProgressDashboardScreen } from '../screens/progress/ProgressDashboardScreen';
 import { SettingsScreen } from '../screens/settings/SettingsScreen';
+import { RoutinesScreen } from '../screens/routines/RoutinesScreen';
+import { RoutineDetailScreen } from '../screens/routines/RoutineDetailScreen';
 import { useTheme } from '../hooks/useTheme';
 import { spacing, borderRadius, fontSize, fontWeight } from '../constants/theme';
 
@@ -28,10 +31,12 @@ export type RootStackParamList = {
   ActiveWorkout: undefined;
   ExerciseSelect: undefined;
   WorkoutDetail: { workoutId: string };
+  RoutineDetail: { routineId?: string };
 };
 
 export type TabParamList = {
   WorkoutList: undefined;
+  Routines: undefined;
   Exercises: undefined;
   Progress: undefined;
   Settings: undefined;
@@ -47,6 +52,7 @@ interface TabIconProps {
 
 const tabConfig: Record<keyof TabParamList, { icon: LucideIcon; label: string }> = {
   WorkoutList: { icon: Dumbbell, label: 'Workouts' },
+  Routines: { icon: FolderOpen, label: 'Routines' },
   Exercises: { icon: Library, label: 'Exercises' },
   Progress: { icon: TrendingUp, label: 'Progress' },
   Settings: { icon: Settings, label: 'Settings' },
@@ -235,6 +241,14 @@ function MainTabs() {
         }}
       />
       <Tab.Screen
+        name="Routines"
+        component={RoutinesScreen}
+        options={{
+          title: 'Routines',
+          headerShown: false,
+        }}
+      />
+      <Tab.Screen
         name="Exercises"
         component={ExerciseLibraryScreen}
         options={{
@@ -335,6 +349,14 @@ export function AppNavigator() {
               fontSize: fontSize.lg,
             },
             headerBackTitle: 'Back',
+          }}
+        />
+        <Stack.Screen
+          name="RoutineDetail"
+          component={RoutineDetailScreen}
+          options={{
+            headerShown: false,
+            animation: 'slide_from_right',
           }}
         />
       </Stack.Navigator>

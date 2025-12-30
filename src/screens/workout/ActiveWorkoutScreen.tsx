@@ -22,6 +22,7 @@ import {
   Weight,
   X,
   Check,
+  Bookmark,
 } from 'lucide-react-native';
 import { useAppSelector, useAppDispatch } from '../../hooks/useStore';
 import {
@@ -32,12 +33,14 @@ import {
   deleteSet,
   removeExerciseFromWorkout,
 } from '../../store/slices/workoutSlice';
+import { addRoutine } from '../../store/slices/routineSlice';
 import { useTheme } from '../../hooks/useTheme';
 import { Button } from '../../components/common/Button';
 import { Card } from '../../components/common/Card';
 import { ExerciseCard } from '../../components/workout/ExerciseCard';
 import { WorkoutProgressRing } from '../../components/common/ProgressRing';
-import { WorkoutSet } from '../../types';
+import { WorkoutSet, Routine, RoutineExercise } from '../../types';
+import { v4 as uuidv4 } from 'uuid';
 import {
   spacing,
   fontSize,
@@ -267,6 +270,62 @@ export function ActiveWorkoutScreen() {
     );
   };
 
+  const handleSaveAsRoutine = () => {
+    if (activeWorkout.exercises.length === 0) {
+      Alert.alert(
+        'No Exercises',
+        'Add at least one exercise before saving as a routine.'
+      );
+      return;
+    }
+
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+
+    Alert.prompt(
+      'Save as Routine',
+      'Enter a name for this routine:',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Save',
+          onPress: (routineName) => {
+            if (!routineName?.trim()) {
+              Alert.alert('Name Required', 'Please enter a name for the routine.');
+              return;
+            }
+
+            const now = new Date().toISOString();
+            const routineExercises: RoutineExercise[] = activeWorkout.exercises.map(
+              (we, index) => ({
+                id: uuidv4(),
+                exerciseId: we.exerciseId,
+                orderIndex: index,
+                targetSets: we.sets.filter(s => !s.isWarmup).length || 3,
+                notes: we.notes,
+              })
+            );
+
+            const newRoutine: Routine = {
+              id: uuidv4(),
+              userId: user.id,
+              name: routineName.trim(),
+              exercises: routineExercises,
+              isTemplate: false,
+              createdAt: now,
+              updatedAt: now,
+            };
+
+            dispatch(addRoutine(newRoutine));
+            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+            Alert.alert('Routine Saved', `"${routineName.trim()}" has been saved to your routines.`);
+          },
+        },
+      ],
+      'plain-text',
+      activeWorkout.name
+    );
+  };
+
   const handleAddExercise = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     navigation.navigate('ExerciseSelect');
@@ -323,11 +382,20 @@ export function ActiveWorkoutScreen() {
                 </Animated.Text>
               </View>
             </View>
-            <WorkoutProgressRing
-              completedSets={completedSets}
-              totalSets={totalSets}
-              size={70}
-            />
+            <View style={styles.headerActions}>
+              <Button
+                title=""
+                onPress={handleSaveAsRoutine}
+                variant="ghost"
+                icon={<Bookmark size={22} color={colors.textSecondary} strokeWidth={2} />}
+                style={styles.saveRoutineButton}
+              />
+              <WorkoutProgressRing
+                completedSets={completedSets}
+                totalSets={totalSets}
+                size={70}
+              />
+            </View>
           </View>
 
           {/* Stats Row */}
@@ -507,6 +575,15 @@ const styles = StyleSheet.create({
   },
   workoutInfo: {
     flex: 1,
+  },
+  headerActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+  },
+  saveRoutineButton: {
+    minWidth: 44,
+    paddingHorizontal: spacing.xs,
   },
   workoutName: {
     fontSize: fontSize.xl,

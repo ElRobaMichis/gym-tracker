@@ -103,3 +103,23 @@ export interface ExerciseHistory {
   totalVolume: number;
   workingSets: number;
 }
+
+// Routine types for saving and reusing workout templates
+export interface RoutineExercise {
+  id: string;
+  exerciseId: string;
+  orderIndex: number;
+  targetSets: number;
+  notes?: string;
+}
+
+export interface Routine {
+  id: string;
+  userId?: string;
+  name: string;
+  description?: string;
+  exercises: RoutineExercise[];
+  isTemplate: boolean; // true for built-in templates, false for user-created
+  createdAt: string;
+  updatedAt: string;
+}
