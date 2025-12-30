@@ -1,0 +1,34 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx create-expo-app@latest:*)",
+      "Bash(npm install:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npm ls:*)",
+      "Bash(npx expo install:*)",
+      "Bash(npx expo start:*)",
+      "Skill(frontend-design)",
+      "Bash(npm uninstall:*)",
+      "Bash(cat:*)",
+      "Bash(npx eas-cli:*)",
+      "Bash(netstat:*)",
+      "Bash(findstr:*)",
+      "Bash(taskkill:*)",
+      "Bash(npx expo export:*)",
+      "Bash(npx ts-node:*)",
+      "Bash(node test-progression.js:*)",
+      "Bash(gh auth:*)",
+      "Bash(winget install:*)",
+      "Bash(refreshenv)",
+      "Bash(\"C:\\\\Program Files\\\\GitHub CLI\\\\gh.exe\" auth status)",
+      "Bash(\"C:\\\\Program Files\\\\GitHub CLI\\\\gh.exe\" auth login --web --git-protocol https)",
+      "Bash(\"C:\\\\Program Files\\\\GitHub CLI\\\\gh.exe\" repo create gym-tracker --public --source=. --remote=origin --push)",
+      "Bash(git commit:*)",
+      "Bash(git config:*)",
+      "Bash(node:*)",
+      "Bash(git add:*)",
+      "Bash(git push)",
+      "Bash(git rm:*)"
+    ]
+  }
+}
