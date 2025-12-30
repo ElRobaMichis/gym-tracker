@@ -10,6 +10,7 @@ import {
   Library,
   TrendingUp,
   Settings,
+  FolderHeart,
   LucideIcon,
 } from 'lucide-react-native';
 
@@ -20,6 +21,7 @@ import { ExerciseSelectScreen } from '../screens/exercises/ExerciseSelectScreen'
 import { ExerciseLibraryScreen } from '../screens/exercises/ExerciseLibraryScreen';
 import { ProgressDashboardScreen } from '../screens/progress/ProgressDashboardScreen';
 import { SettingsScreen } from '../screens/settings/SettingsScreen';
+import { RoutinesScreen } from '../screens/routines/RoutinesScreen';
 import { useTheme } from '../hooks/useTheme';
 import { spacing, borderRadius, fontSize, fontWeight } from '../constants/theme';
 
@@ -32,6 +34,7 @@ export type RootStackParamList = {
 
 export type TabParamList = {
   WorkoutList: undefined;
+  Routines: undefined;
   Exercises: undefined;
   Progress: undefined;
   Settings: undefined;
@@ -47,6 +50,7 @@ interface TabIconProps {
 
 const tabConfig: Record<keyof TabParamList, { icon: LucideIcon; label: string }> = {
   WorkoutList: { icon: Dumbbell, label: 'Workouts' },
+  Routines: { icon: FolderHeart, label: 'Routines' },
   Exercises: { icon: Library, label: 'Exercises' },
   Progress: { icon: TrendingUp, label: 'Progress' },
   Settings: { icon: Settings, label: 'Settings' },
@@ -231,6 +235,14 @@ function MainTabs() {
         component={WorkoutListScreen}
         options={{
           title: 'Workouts',
+          headerShown: false,
+        }}
+      />
+      <Tab.Screen
+        name="Routines"
+        component={RoutinesScreen}
+        options={{
+          title: 'Routines',
           headerShown: false,
         }}
       />

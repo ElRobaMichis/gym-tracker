@@ -22,6 +22,7 @@ import {
   Weight,
   X,
   Check,
+  FolderHeart,
 } from 'lucide-react-native';
 import { useAppSelector, useAppDispatch } from '../../hooks/useStore';
 import {
@@ -37,6 +38,7 @@ import { Button } from '../../components/common/Button';
 import { Card } from '../../components/common/Card';
 import { ExerciseCard } from '../../components/workout/ExerciseCard';
 import { WorkoutProgressRing } from '../../components/common/ProgressRing';
+import { SaveRoutineModal } from '../../components/workout/SaveRoutineModal';
 import { WorkoutSet } from '../../types';
 import {
   spacing,
@@ -63,6 +65,7 @@ export function ActiveWorkoutScreen() {
   const { user } = useAppSelector(state => state.user);
 
   const [elapsedTime, setElapsedTime] = useState(0);
+  const [showSaveRoutineModal, setShowSaveRoutineModal] = useState(false);
 
   // Animation values
   const headerOpacity = useRef(new Animated.Value(0)).current;
@@ -234,18 +237,37 @@ export function ActiveWorkoutScreen() {
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     Alert.alert(
       'Finish Workout',
-      'Are you sure you want to finish this workout?',
+      'Would you like to save this as a routine before finishing?',
       [
         { text: 'Cancel', style: 'cancel' },
         {
-          text: 'Finish',
+          text: 'Just Finish',
           onPress: () => {
             dispatch(endWorkout());
             navigation.goBack();
           },
         },
+        {
+          text: 'Save & Finish',
+          onPress: () => {
+            setShowSaveRoutineModal(true);
+          },
+        },
       ]
     );
+  };
+
+  const handleSaveAsRoutine = () => {
+    if (activeWorkout.exercises.length === 0) {
+      Alert.alert(
+        'No exercises',
+        'Add some exercises before saving as a routine.',
+        [{ text: 'OK' }]
+      );
+      return;
+    }
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    setShowSaveRoutineModal(true);
   };
 
   const handleCancelWorkout = () => {
@@ -467,11 +489,18 @@ export function ActiveWorkoutScreen() {
         />
         <SafeAreaView edges={['bottom']} style={styles.footerContent}>
           <Button
-            title="Cancel"
+            title=""
             onPress={handleCancelWorkout}
             variant="ghost"
-            icon={<X size={18} color={colors.textSecondary} strokeWidth={2.5} />}
-            style={styles.footerButton}
+            icon={<X size={20} color={colors.textSecondary} strokeWidth={2.5} />}
+            style={styles.iconButton}
+          />
+          <Button
+            title=""
+            onPress={handleSaveAsRoutine}
+            variant="ghost"
+            icon={<FolderHeart size={20} color={colors.primary} strokeWidth={2.5} />}
+            style={styles.iconButton}
           />
           <Button
             title="Finish Workout"
@@ -483,6 +512,35 @@ export function ActiveWorkoutScreen() {
           />
         </SafeAreaView>
       </Animated.View>
+
+      {/* Save as Routine Modal */}
+      <SaveRoutineModal
+        visible={showSaveRoutineModal}
+        onClose={() => {
+          setShowSaveRoutineModal(false);
+          // Check if we should finish the workout after saving
+          const hasCompletedSets = activeWorkout.exercises.some(ex =>
+            ex.sets.some(s => s.completed)
+          );
+          if (hasCompletedSets) {
+            Alert.alert(
+              'Routine Saved',
+              'Your routine has been saved. Would you like to finish the workout now?',
+              [
+                { text: 'Keep Working', style: 'cancel' },
+                {
+                  text: 'Finish',
+                  onPress: () => {
+                    dispatch(endWorkout());
+                    navigation.goBack();
+                  },
+                },
+              ]
+            );
+          }
+        }}
+        workout={activeWorkout}
+      />
     </View>
   );
 }
@@ -600,6 +658,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   finishButton: {
-    flex: 2,
+    flex: 3,
+  },
+  iconButton: {
+    paddingHorizontal: spacing.sm,
   },
 });
