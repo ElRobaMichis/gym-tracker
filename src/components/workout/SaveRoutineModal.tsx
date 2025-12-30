@@ -257,13 +257,6 @@ export function SaveRoutineModal({ visible, onClose, workout }: SaveRoutineModal
           {/* Footer */}
           <View style={[styles.footer, { borderTopColor: colors.border }]}>
             <Button
-              title="Cancel"
-              onPress={onClose}
-              variant="outline"
-              size="lg"
-              style={styles.cancelButton}
-            />
-            <Button
               title="Save Routine"
               onPress={handleSave}
               variant="primary"
@@ -271,7 +264,14 @@ export function SaveRoutineModal({ visible, onClose, workout }: SaveRoutineModal
               size="lg"
               icon={<Save size={18} color="#FFFFFF" />}
               disabled={!name.trim()}
-              style={styles.saveButton}
+              fullWidth
+            />
+            <Button
+              title="Cancel"
+              onPress={onClose}
+              variant="ghost"
+              size="md"
+              fullWidth
             />
           </View>
         </View>
@@ -377,17 +377,11 @@ const styles = StyleSheet.create({
     marginTop: spacing.xxs,
   },
   footer: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.md,
     borderTopWidth: 1,
     paddingBottom: Platform.OS === 'ios' ? spacing.xl : spacing.md,
     gap: spacing.sm,
-  },
-  cancelButton: {
-    flex: 1,
-  },
-  saveButton: {
-    flex: 2,
   },
 });
