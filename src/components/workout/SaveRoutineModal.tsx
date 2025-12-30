@@ -259,17 +259,19 @@ export function SaveRoutineModal({ visible, onClose, workout }: SaveRoutineModal
             <Button
               title="Cancel"
               onPress={onClose}
-              variant="ghost"
-              style={{ flex: 1, marginRight: spacing.sm }}
+              variant="outline"
+              size="lg"
+              style={styles.cancelButton}
             />
             <Button
               title="Save Routine"
               onPress={handleSave}
               variant="primary"
               gradient
+              size="lg"
               icon={<Save size={18} color="#FFFFFF" />}
               disabled={!name.trim()}
-              style={{ flex: 2 }}
+              style={styles.saveButton}
             />
           </View>
         </View>
@@ -380,5 +382,12 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.md,
     borderTopWidth: 1,
     paddingBottom: Platform.OS === 'ios' ? spacing.xl : spacing.md,
+    gap: spacing.sm,
+  },
+  cancelButton: {
+    flex: 1,
+  },
+  saveButton: {
+    flex: 2,
   },
 });
